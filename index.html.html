@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ĐỘI_01 - GAME LỊCH SỬ 12</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --accent-color: #e74c3c;
+            --bg-color: #ecf0f1;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .game-container {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+            width: 100%;
+            max-width: 550px;
+            text-align: center;
+        }
+        h1 { color: var(--primary-color); margin-bottom: 20px; font-size: 24px; }
+        .question { font-size: 18px; font-weight: 600; margin-bottom: 20px; color: #333; text-align: left; }
+        .options-grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
+        button.btn-option {
+            background-color: #fff;
+            border: 2px solid #bdc3c7;
+            padding: 14px;
+            font-size: 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: left;
+        }
+        button.btn-option:hover {
+            background-color: #3498db;
+            color: white;
+            border-color: #3498db;
+        }
+        .score-board { font-size: 18px; font-weight: bold; color: var(--accent-color); margin-top: 20px; }
+        .hidden { display: none; }
+        #restart-btn {
+            background: var(--primary-color); color: white; border: none; padding: 12px 25px;
+            font-size: 16px; border-radius: 6px; cursor: pointer; margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="game-container">
+    <h1>MÃ ĐỘI: ĐỘI_01 <br><small style="font-size:14px; color:#7f8c8d;">Game Trắc Nghiệm Lịch Sử 12</small></h1>
+    <hr style="border: 0; border-top: 1px solid #eee; margin-bottom: 20px;">
+    
+    <div id="game-box">
+        <div class="question" id="question-text">Đang tải câu hỏi...</div>
+        <div class="options-grid" id="options-container"></div>
+    </div>
+
+    <div id="result-box" class="hidden">
+        <h2>Kết Thúc Trò Chơi!</h2>
+        <div class="score-board" id="final-score"></div>
+        <button id="restart-btn" onclick="startGame()">Chơi Lại</button>
+    </div>
+</div>
+
+<script>
+    // Data Câu hỏi Lịch sử 12
+    const quizData = [
+        {
+            question: "Câu 1: Hội nghị Thành lập Đảng Cộng sản Việt Nam (đầu năm 1930) diễn ra tại đâu?",
+            answers: ["Hương Cảng (Hồng Kông)", "Ma Cao (Trung Quốc)", "Quảng Châu (Trung Quốc)", "Cao Bằng (Việt Nam)"],
+            correct: 0
+        },
+        {
+            question: "Câu 2: Chiến dịch nào mở đầu cho Tổng tiến công và nổi dậy Xuân 1975?",
+            answers: ["Chiến dịch Huế - Đà Nẵng", "Chiến dịch Tây Nguyên", "Chiến dịch Hồ Chí Minh", "Chiến dịch Đường 14 - Phước Long"],
+            correct: 1
+        },
+        {
+            question: "Câu 3: Bản Tuyên ngôn Độc lập nước VNDCCH được Bác Hồ đọc vào ngày nào?",
+            answers: ["19/08/1945", "30/04/1975", "02/09/1945", "22/12/1944"],
+            correct: 2
+        }
+    ];
+
+    let currentQuestionIndex = 0;
+    let score = 0;
+
+    function startGame() {
+        currentQuestionIndex = 0;
+        score = 0;
+        document.getElementById('result-box').classList.add('hidden');
+        document.getElementById('game-box').classList.remove('hidden');
+        showQuestion();
+    }
+
+    function showQuestion() {
+        const currentQuestion = quizData[currentQuestionIndex];
+        document.getElementById('question-text').innerText = currentQuestion.question;
+        
+        const optionsContainer = document.getElementById('options-container');
+        optionsContainer.innerHTML = '';
+        
+        currentQuestion.answers.forEach((answer, index) => {
+            const button = document.createElement('button');
+            button.innerText = answer;
+            button.classList.add('btn-option');
+            button.addEventListener('click', () => selectAnswer(index));
+            optionsContainer.appendChild(button);
+        });
+    }
+
+    function selectAnswer(selectedIndex) {
+        if (selectedIndex === quizData[currentQuestionIndex].correct) {
+            score += 10;
+        }
+        
+        currentQuestionIndex++;
+        if (currentQuestionIndex < quizData.length) {
+            showQuestion();
+        } else {
+            showResult();
+        }
+    }
+
+    function showResult() {
+        document.getElementById('game-box').classList.add('hidden');
+        document.getElementById('result-box').classList.remove('hidden');
+        document.getElementById('final-score').innerText = `Bạn đạt được: ${score} / ${quizData.length * 10} điểm!`;
+    }
+
+    // Khởi chạy game khi load trang
+    window.onload = startGame;
+</script>
+</body>
+</html>
